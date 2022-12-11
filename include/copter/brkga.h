@@ -63,6 +63,7 @@ public:
   }
 
   void InitPop(std::vector<Chromo> init_pop) {
+    Clear();
     population_ = std::move(init_pop);
     auto init_num = init_pop.size();
 
@@ -79,6 +80,11 @@ public:
     return Decode(best_chromo_.genes);
   }
 
+  void Clear(){
+    population_.clear();
+    best_chromo_ = Chromo();
+  }
+
   void Optimize(std::ostream &log) {
     // init population
     if (population_.empty()) {
@@ -93,7 +99,7 @@ public:
                                           population_.cend(), chromo_less);
 
     std::vector<std::size_t> elite_idxes, ord_idxes;
-    std::cout << "generation_best,best\n";
+    log << "generation_best,best\n";
     for (std::size_t i = 0; i < param_.max_iter; ++i) {
 
       // next generation
@@ -158,6 +164,7 @@ public:
   }
 
   void InitPopRandom() {
+    Clear();
     std::uniform_real_distribution<double> dist(0, 1);
     for (std::size_t i = 0; i < param_.pop_size; ++i) {
       auto rand_gene =
